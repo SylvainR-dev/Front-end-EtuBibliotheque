@@ -3,30 +3,28 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MaterialModule } from '../../shared/material.module';
 import { UserService } from '../../core/service/user.service';
-import { Register } from '../../core/models/Register';
+import { Login } from '../../core/models/Login';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-register',
+  selector: 'app-login',
   imports: [CommonModule, MaterialModule],
-  templateUrl: './register.component.html',
+  templateUrl: './login.component.html',
   standalone: true,
-  styleUrl: './register.component.css'
+  styleUrl: './login.component.css'
 })
-export class RegisterComponent implements OnInit {
+export class LoginComponent implements OnInit {
   private userService = inject(UserService);
   private formBuilder = inject(FormBuilder);
   private destroyRef = inject(DestroyRef);
   private router = inject(Router);
-  registerForm: FormGroup = new FormGroup({});
+  loginForm: FormGroup = new FormGroup({});
   submitted: boolean = false;
 
   ngOnInit() {
-    this.registerForm = this.formBuilder.group(
+    this.loginForm = this.formBuilder.group(
       {
-        firstName: ['', Validators.required],
-        lastName: ['', Validators.required],
         login: ['', Validators.required],
         password: ['', Validators.required]
       },
@@ -34,29 +32,30 @@ export class RegisterComponent implements OnInit {
   }
 
   get form() {
-    return this.registerForm.controls;
+    return this.loginForm.controls;
   }
 
   onSubmit(): void {
     this.submitted = true;
-    if (this.registerForm.invalid) {
+    if (this.loginForm.invalid) {
       return;
     }
-    const registerUser: Register = {
-      firstName: this.registerForm.get('firstName')?.value,
-      lastName: this.registerForm.get('lastName')?.value,
-      login: this.registerForm.get('login')?.value,
-      password: this.registerForm.get('password')?.value
+    const loginUser: Login = {
+      login: this.loginForm.get('login')?.value,
+      password: this.loginForm.get('password')?.value
     };
-    this.userService.register(registerUser)
+    this.userService.login(loginUser)
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => {
-    this.router.navigate(['/login']);
-    });
+      .subscribe(token => {
+        localStorage.setItem('token', token as string);
+        this.router.navigate(['/dashboard']);
+        // Renvoie maintenant vers dashboard avec les boutons
+      },
+    );
   }
 
   onReset(): void {
     this.submitted = false;
-    this.registerForm.reset();
+    this.loginForm.reset();
   }
 }

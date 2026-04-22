@@ -1,0 +1,21 @@
+.btn-delete {
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+.return-dashboard {
+  margin-top: 50px;
+}
+.title-case {
+  margin-bottom: 50px;
+}
+:host {
+  display: block;
+  margin-left: 40px;
+}
+td, th {
+  padding: 10px 20px;
+}

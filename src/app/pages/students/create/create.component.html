@@ -1,7 +1,7 @@
 <div class="card m-3">
-  <h5 class="card-header">Formulaire d'enregistrement</h5>
+  <h5 class="card-header">Créer un étudiant</h5>
   <div class="card-body">
-    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+    <form [formGroup]="createForm" (ngSubmit)="onSubmit()">
       <div class="form-row">
         <div class="form-group col-5">
           <label>Prénom</label>
@@ -37,40 +37,24 @@
         </div>
       </div>
       <div class="form-group">
-        <label>Login</label>
+        <label>Email</label>
         <input
           type="text"
-          formControlName="login"
+          formControlName="email"
           class="form-control"
-          [ngClass]="{ 'is-invalid': submitted && form['login'].errors }"
+          [ngClass]="{ 'is-invalid': submitted && form['email'].errors }"
         />
-        @if (submitted && form['login'].errors) {
+        @if (submitted && form['email'].errors) {
           <div class="invalid-feedback">
-            @if (form['login'].errors?.['required']) {
-              <div>Login is required</div>
+            @if (form['email'].errors?.['required']) {
+              <div>Email is required</div>
             }
           </div>
         }
       </div>
 
-      <div class="form-group">
-        <label>Mot de passe</label>
-        <input
-          type="text"
-          formControlName="password"
-          class="form-control"
-          [ngClass]="{ 'is-invalid': submitted && form['password'].errors }"
-        />
-        @if (submitted && form['password'].errors) {
-          <div class="invalid-feedback">
-            @if (form['password'].errors?.['required']) {
-              <div>password is required</div>
-            }
-          </div>
-        }
-      </div>
       <div class="text-center">
-        <button class="btn btn-primary mr-1">Valider</button>
+        <button type="submit" class="btn btn-primary mr-1">Créer</button>
         <button class="btn btn-secondary" type="reset" (click)="onReset()">
           Annuler
         </button>
