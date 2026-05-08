@@ -1,17 +1,38 @@
-import { TestBed } from '@angular/core/testing';
-import { CanActivateFn } from '@angular/router';
-
+﻿import { TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
+import { provideRouter } from '@angular/router';
 import { authGuard } from './auth.guard';
+import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 
-describe('authGuard', () => {
-  const executeGuard: CanActivateFn = (...guardParameters) => 
-      TestBed.runInInjectionContext(() => authGuard(...guardParameters));
+describe('AuthGuard', () => {
+  let router: Router;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [provideRouter([])]
+    });
+    router = TestBed.inject(Router);
   });
 
-  it('should be created', () => {
-    expect(executeGuard).toBeTruthy();
+  afterEach(() => {
+    localStorage.clear();
+  });
+
+  it('should allow access when token exists', () => {
+    localStorage.setItem('token', 'fake-token');
+    const result = TestBed.runInInjectionContext(() =>
+      authGuard({} as ActivatedRouteSnapshot, {} as RouterStateSnapshot)
+    );
+    expect(result).toBe(true);
+  });
+
+  it('should redirect to login when no token', () => {
+    localStorage.removeItem('token');
+    const navigateSpy = jest.spyOn(router, 'navigate');
+    const result = TestBed.runInInjectionContext(() =>
+      authGuard({} as ActivatedRouteSnapshot, {} as RouterStateSnapshot)
+    );
+    expect(result).toBe(false);
+    expect(navigateSpy).toHaveBeenCalledWith(['/login']);
   });
 });
